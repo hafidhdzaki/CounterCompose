@@ -13,8 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.countercompose.ui.theme.CounterComposeTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 @Composable
 fun CounterScreen(modifier: Modifier = Modifier) {
+    var counter by rememberSaveable { mutableIntStateOf(0) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -28,13 +33,15 @@ fun CounterScreen(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         CounterDisplay(
-            value = 0,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            value = counter,
+            modifier = Modifier.fillMaxWidth().weight(1f)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        CounterButtons()
+        CounterButtons(
+            onDecrement = { counter-- },
+            onIncrement = { counter++ },
+            onReset = { counter = 0 }
+        )
     }
 }
 
