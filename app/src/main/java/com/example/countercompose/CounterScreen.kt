@@ -17,9 +17,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
-fun CounterScreen(modifier: Modifier = Modifier) {
-    var counter by rememberSaveable { mutableIntStateOf(0) }
+fun CounterApp(
+    modifier: Modifier = Modifier,
+    viewModel: CounterViewModel = viewModel()
+) {
+    val counter by viewModel.counter
+    CounterScreen(
+        counter = counter,
+        onIncrement = { viewModel.increment() },
+        onDecrement = { viewModel.decrement() },
+        onReset = { viewModel.reset() },
+        modifier = modifier
+    )
+}
+@Composable
+fun CounterScreen(
+    counter: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -38,9 +58,21 @@ fun CounterScreen(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         CounterButtons(
-            onDecrement = { counter-- },
-            onIncrement = { counter++ },
-            onReset = { counter = 0 }
+            onDecrement = onDecrement,
+            onIncrement = onIncrement,
+            onReset = onReset
+        )
+    }
+}
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun CounterScreenPreview() {
+    CounterComposeTheme {
+        CounterScreen(
+            counter = 7,
+            onIncrement = {},
+            onDecrement = {},
+            onReset = {}
         )
     }
 }
@@ -129,13 +161,5 @@ fun CounterButtons(
             Spacer(Modifier.width(ButtonDefaults.IconSpacing))
             Text("RESET")
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun CounterScreenPreview() {
-    CounterComposeTheme {
-        CounterScreen()
     }
 }
